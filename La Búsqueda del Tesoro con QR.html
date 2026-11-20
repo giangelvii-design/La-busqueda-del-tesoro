@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>La Búsqueda del Tesoro con QR</title>
+<style>
+:root{--bg:#f3e6c8;--card:#fbf3df;--ink:#2a1d12;--mute:#6b5a46;--sea:#0f4c5c;--x:#b3121d;--gold:#e0a100;--ok:#2d6a4f;--line:#c9b68c;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14232a;--card:#1c3039;--ink:#f1e6cc;--mute:#b5a888;--sea:#7fc4d4;--x:#ff6b6b;--gold:#f2c14e;--ok:#7fd1a0;--line:#35505b;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#14232a;--card:#1c3039;--ink:#f1e6cc;--mute:#b5a888;--sea:#7fc4d4;--x:#ff6b6b;--gold:#f2c14e;--ok:#7fd1a0;--line:#35505b;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.5 Georgia,"Times New Roman",serif}
+header{padding:18px 16px 8px;max-width:760px;margin:auto}
+h1{font-size:1.7rem;line-height:1.15;margin:0 0 4px}
+.sub{color:var(--mute);margin:0 0 12px;font-size:.95rem}
+nav{display:flex;gap:6px;flex-wrap:wrap}
+nav a,button,.btn{font:inherit;font-size:.95rem;background:var(--card);color:var(--ink);border:2px solid var(--line);border-radius:10px;padding:8px 12px;text-decoration:none;cursor:pointer}
+nav a.on,button.pri{background:var(--sea);color:var(--bg);border-color:var(--sea)}
+main{max-width:760px;margin:auto;padding:8px 16px 40px}
+.card{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:14px;margin:12px 0}
+h2{font-size:1.3rem;margin:6px 0}
+.opt{display:block;width:100%;text-align:left;margin:8px 0}
+.opt.ok{background:var(--ok);color:#fff;border-color:var(--ok)}
+.opt.bad{border-color:var(--x);color:var(--x)}
+.pts{font-weight:bold;color:var(--sea)}
+svg{width:100%;height:auto;display:block}
+.st{cursor:pointer}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.qr{text-align:center;border:3px dashed var(--ink);border-radius:12px;padding:12px;background:#fff;color:#111;break-inside:avoid}
+.qr div.c{display:flex;justify-content:center;margin:8px 0}
+input{font:inherit;width:100%;padding:9px;border:2px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink)}
+.cert{border:6px double var(--gold);text-align:center;padding:22px 14px;background:var(--card);border-radius:6px}
+.cert h2{font-size:1.5rem}
+.eq{font-size:.85rem;color:var(--mute)}
+.letters span{display:inline-block;width:42px;height:48px;line-height:48px;margin:3px;border:2px solid var(--ink);border-radius:8px;font-size:1.5rem;text-align:center}
+@media print{nav,header .sub,.noprint{display:none}body{background:#fff;color:#000}}
+</style></head><body>
+<header><h1>La Búsqueda del Tesoro con QR</h1>
+<p class="sub">Aprende tus derechos como usuario de agua potable · SUNASS · Arequipa</p>
+<nav id="nav"></nav></header>
+<main id="app"></main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+var EQ=["Ollachica Saico Miriam Elizabeth","Chambilla Ramos Crisdel Anais","Peralta Chilo Andrea Dayely","Fuentes Huertas Luisa Fernanda","Quispe Zapana Lizbeth Xena","Mamani Macedo Jean Piere"];
+var S=[
+{t:"¿Quién vigila el agua?",lugar:"Plaza de Armas o parque",L:"A",x:70,y:330,
+q:"Acertijo: vigilo a las empresas de agua como SEDAPAR y mi Tribunal resuelve reclamos de los usuarios. ¿Quién soy?",
+o:["INDECOPI","SUNASS","SUNAT","OSIPTEL"],c:1,
+f:"SUNASS regula y supervisa a las empresas prestadoras (EPS). Su Tribunal (TRASS) resuelve en segunda y última instancia administrativa los reclamos de los usuarios."},
+{t:"Derechos y deberes",lugar:"Mercado",L:"G",x:130,y:250,
+q:"¿Cuál de estas opciones es una OBLIGACIÓN del usuario del servicio de agua?",
+o:["Recibir información clara sobre el servicio","Presentar un reclamo cuando no está de acuerdo","Pagar oportunamente los recibos del servicio","Recibir una respuesta a su reclamo"],c:2,
+f:"Pagar a tiempo es una obligación. Recibir información, reclamar y obtener respuesta son derechos. También es un deber no manipular la conexión."},
+{t:"El recibo que no cuadra",lugar:"Universidad",L:"U",x:230,y:200,
+q:"Te llega un recibo muy alto y no tienes fugas. ¿Qué haces?",
+o:["Reclamo ante la EPS dentro de 60 días calendario desde el vencimiento, sin necesidad de pagar el recibo reclamado","Espero a pagarlo completo y después veo","Voy directo al Tribunal de SUNASS sin reclamar en la EPS","No hago nada porque es imposible reclamar"],c:0,
+f:"Se presenta el reclamo en la EPS (formulario de reclamo) dentro de 60 días calendario desde el vencimiento del recibo. La EPS tiene 35 días útiles para resolver."},
+{t:"Si no te responden",lugar:"Institución educativa",L:"A",x:150,y:140,
+q:"¿Cuál es el orden correcto del camino de un reclamo?",
+o:["TRASS → EPS → apelación → respuesta","Apelación → EPS → respuesta → TRASS","Reclamo en la EPS → respuesta de la EPS → apelación → TRASS resuelve","Respuesta → TRASS → reclamo → EPS"],c:2,
+f:"Primero reclamas en la EPS. Si no estás de acuerdo o no hay respuesta, apelas y el TRASS resuelve en última instancia administrativa. Verifica los plazos de apelación en el reglamento vigente."},
+{t:"El gran reto",lugar:"Parque final",L:"",x:250,y:60,
+q:"Hace días no llega agua a tu casa. ¿Cuál es el mejor primer paso?",
+o:["Publicarlo en redes y esperar","Dejar de pagar todo el recibo","Documentar (fecha, fotos, número de suministro) y presentar el reclamo ante la EPS","Esperar varios meses a ver si vuelve"],c:2,
+f:"Un reclamo con sustento es más sólido: anota fechas y horas, toma fotos o videos y ten a mano tu número de suministro."}];
+var P={};try{P=JSON.parse(localStorage.getItem("tq")||"{}")}catch(e){}
+function save(){try{localStorage.setItem("tq",JSON.stringify(P))}catch(e){}}
+function pts(){var s=0;for(var k in P)s+=P[k].p||0;return s}
+function done(i){return P[i]&&P[i].ok}
+function $(h){document.getElementById("app").innerHTML=h}
+function nav(h){var n=[["mapa","Mapa"],["pasaporte","Pasaporte"],["qr","Placas QR"],["cofre","Cofre"]];
+document.getElementById("nav").innerHTML=n.map(function(a){return '<a href="#'+a[0]+'" class="'+(h==a[0]?"on":"")+'">'+a[1]+'</a>'}).join("")}
+function mapa(){var d="M70,330 L130,250 L230,200 L150,140 L250,60";
+var s=S.map(function(e,i){return '<g class="st" onclick="location.hash=\'e'+(i+1)+'\'"><circle cx="'+e.x+'" cy="'+e.y+'" r="20" fill="'+(done(i)?"var(--ok)":"var(--card)")+'" stroke="var(--ink)" stroke-width="3"/><text x="'+e.x+'" y="'+(e.y+6)+'" text-anchor="middle" font-size="18" font-weight="bold" fill="'+(done(i)?"#fff":"var(--ink)")+'">'+(i+1)+'</text></g>'}).join("");
+var l=S.map(function(e,i){return '<p style="margin:4px 0"><a href="#e'+(i+1)+'" style="color:var(--sea)">'+(i+1)+'. '+e.t+'</a> · '+e.lugar+(done(i)?' ✔':'')+'</p>'}).join("");
+$('<div class="card"><svg viewBox="0 0 320 380" role="img" aria-label="Mapa del tesoro con 5 estaciones"><rect x="4" y="4" width="312" height="372" rx="14" fill="var(--card)" stroke="var(--line)" stroke-width="3"/><text x="24" y="40" font-size="16" fill="var(--mute)">INICIO</text><path d="'+d+'" fill="none" stroke="var(--ink)" stroke-width="3" stroke-dasharray="9 8"/><text x="268" y="40" font-size="40" font-weight="bold" fill="var(--x)">✕</text>'+s+'</svg></div><div class="card"><h2>Tu ruta</h2>'+l+'<p class="pts">Puntaje: '+pts()+' / 20</p><p class="eq">Escanea el QR de cada estación o toca el número en el mapa.</p></div>')}
+function est(n){var i=n-1,e=S[i];if(!e)return mapa();
+var h='<div class="card"><h2>Estación '+n+': '+e.t+'</h2><p class="eq">Lugar: '+e.lugar+'</p><p>'+e.q+'</p>';
+e.o.forEach(function(o,j){h+='<button class="opt" id="o'+j+'" onclick="resp('+i+','+j+')">'+o+'</button>'});
+$(h+'<div id="fb"></div></div>');if(done(i))resp(i,e.c,1)}
+function resp(i,j,silent){var e=S[i];P[i]=P[i]||{a:0,p:0,ok:0};
+if(P[i].ok&&!silent)return;
+var b=document.getElementById("o"+j);
+if(j==e.c){if(!P[i].ok){P[i].ok=1;P[i].p=Math.max(1,4-P[i].a);save()}
+b.className="opt ok";var nx=i<4?'#e'+(i+2):'#cofre';
+document.getElementById("fb").innerHTML='<p><b>¡Correcto!</b> '+e.f+'</p><p class="pts">+'+P[i].p+' puntos'+(e.L?' · Letra clave: <b>'+e.L+'</b>':' · Ya puedes ir al cofre')+'</p><a class="btn pri" href="'+nx+'">'+(i<4?'Siguiente estación':'Ir al cofre')+'</a> <a class="btn" href="#mapa">Mapa</a>'}
+else{P[i].a++;save();b.className="opt bad";document.getElementById("fb").innerHTML='<p>Todavía no. Vuelve a leer y prueba otra opción (cada intento resta 1 punto, mínimo 1).</p>'}}
+function pas(){var h='<div class="card"><h2>Pasaporte del explorador</h2><div class="letters">';
+S.forEach(function(e,i){if(e.L)h+='<span>'+(done(i)?e.L:"?")+'</span>'});
+h+='</div><p>Reúne las 4 letras en el orden de las estaciones.</p>';
+S.forEach(function(e,i){h+='<p style="margin:4px 0">'+(done(i)?'✔ ':'☐ ')+'Estación '+(i+1)+': '+e.t+' ('+(P[i]?P[i].p||0:0)+' pts)</p>'});
+$(h+'<p class="pts">Total: '+pts()+' / 20 · Se necesitan 12 para el certificado</p><button onclick="P={};save();pas()">Reiniciar juego</button></div>')}
+function qr(){var base=location.href.split("#")[0];
+$('<div class="card noprint"><h2>Placas QR de las 5 estaciones</h2><p>Pega aquí el enlace público del juego (el que compartirás) y las placas se actualizan. Luego imprime y plastifica.</p><input id="u" value="'+base+'"><p><button class="pri" onclick="window.print()">Imprimir placas</button></p></div><div class="grid" id="g"></div>');
+var g=document.getElementById("g");S.forEach(function(e,i){g.innerHTML+='<div class="qr"><b>Estación '+(i+1)+'</b><div class="c" id="q'+i+'"></div><small>'+e.t+'<br>Escanea para abrir la misión</small></div>'});
+function mk(){var b=document.getElementById("u").value.split("#")[0];S.forEach(function(e,i){var c=document.getElementById("q"+i);c.innerHTML="";try{new QRCode(c,{text:b+"#e"+(i+1),width:150,height:150,correctLevel:QRCode.CorrectLevel.M})}catch(x){c.textContent="Sin conexión para generar QR"}})}
+document.getElementById("u").oninput=mk;mk()}
+function cofre(){var ok=pts()>=12;
+$('<div class="card"><h2>El cofre del tesoro</h2><p>Escribe la palabra formada por las letras clave.</p><input id="w" maxlength="4" placeholder="Palabra de 4 letras" autocomplete="off"><p><button class="pri" onclick="abrir()">Abrir cofre</button></p><div id="r"></div></div>')}
+function abrir(){var w=document.getElementById("w").value.trim().toUpperCase(),r=document.getElementById("r");
+if(w!="AGUA"){r.innerHTML="<p>La palabra no es correcta. Revisa tu pasaporte.</p>";return}
+if(pts()<12){r.innerHTML="<p>La palabra es correcta, pero necesitas al menos 12 puntos. Llevas "+pts()+". Repite alguna misión.</p>";return}
+r.innerHTML='<div class="cert"><p class="eq">Certificado</p><h2>Ciudadano Defensor del Agua</h2><p>Se otorga a</p><input id="nm" placeholder="Escribe tu nombre" style="text-align:center"><p>por conocer sus derechos y obligaciones como usuario de los servicios de agua potable y saneamiento, y saber cómo ejercerlos.</p><p class="pts">Puntaje: '+pts()+' / 20</p><p class="eq">Proyecto: Derecho de la Regulación · Universidad Continental<br>Equipo: '+EQ.join("; ")+'</p></div><p class="noprint"><button onclick="window.print()">Imprimir certificado</button></p>'}
+function go(){var h=location.hash.slice(1)||"mapa";nav(h[0]=="e"?"mapa":h);
+if(h=="pasaporte")pas();else if(h=="qr")qr();else if(h=="cofre")cofre();else if(/^e[1-5]$/.test(h))est(+h[1]);else mapa();window.scrollTo(0,0)}
+window.addEventListener("hashchange",go);go();
+</script></body></html>
